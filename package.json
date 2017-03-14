@@ -1,6 +1,6 @@
 {
   "name": "job_helper",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A helper lib for a Sequelize/Postgres backed in-process job queue",
   "main": "src/job_helper.js",
   "directories": {
