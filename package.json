@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/davidbanham/job_helper"
+    "url": "https://github.com/davidbanham/job_helper.git"
   },
   "keywords": [
     "postgres",
