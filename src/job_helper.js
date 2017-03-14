@@ -14,6 +14,21 @@ const reapFactory = (Job) => () =>
 
 const calculateNextRun = (cron, lastRun) => {
   if (!cron) return new Date();
+
+  if (cron === 'fortnightly') {
+    const now = new Date(lastRun);
+    const manjana = new Date();
+    manjana.setDate(now.getDate() + 14);
+    return manjana.toISOString();
+  }
+
+  if (cron === 'monthly') {
+    const now = new Date(lastRun);
+    const manjana = new Date();
+    manjana.setDate(now.getDate());
+    manjana.setMonth(now.getMonth() + 1);
+  }
+
   const interval = parser.parseExpression(cron, { currentDate: lastRun });
   return interval.next();
 };
