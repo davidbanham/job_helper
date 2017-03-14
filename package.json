@@ -1,0 +1,34 @@
+{
+  "name": "job_helper",
+  "version": "1.0.0",
+  "description": "A helper lib for a Sequelize/Postgres backed in-process job queue",
+  "main": "src/job_helper.js",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/davidbanham/job_helper"
+  },
+  "keywords": [
+    "postgres",
+    "job",
+    "queue",
+    "sequelize"
+  ],
+  "author": "david@banham.id.au",
+  "license": "ISC",
+  "dependencies": {
+    "cron-parser": "^2.3.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "pg": "^6.1.4",
+    "sequelize": "^3.30.2"
+  }
+}
