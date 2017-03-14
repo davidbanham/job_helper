@@ -1,6 +1,5 @@
-const helper = require('job_helper');
-const { logger, db } = require('../../config');
-const Job = require('../../src/models/job.js');
+const jobHelper = require('../lib/job_helper');
+const { logger } = require('../../config');
 const { someJobHandler } = require('./someJobHandler');
 
 let inProgress = false;
@@ -8,11 +7,6 @@ let inProgress = false;
 const handlers = {
   'some job': someJobHandler,
 };
-
-const jobHelper = helper({
-  db,
-  Job,
-});
 
 const pollForJob = async (followOn) => {
   // If there's a job in progress or no jobs on the queue

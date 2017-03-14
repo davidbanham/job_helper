@@ -6,7 +6,7 @@ You won't get as robust a solution as you could build on top of an actual distri
 
 ## How?
 
-Take a look at `example/index.js`. It's an example of a way to drive the helper. It's designed to, in turn, be driven by `example/bin.js`.
+Take a look at `example/src/jobs/index.js`. It's an example of a way to drive the helper. It's designed to, in turn, be driven by `example/bin.js`.
 
 There are also example model and migration files in the `example` dir.
 
