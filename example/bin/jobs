@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+const { pollForJob } = require('../src/jobs');
+const { logger, JOB_POLL_INTERVAL } = require('../config');
+
+logger.info('Starting jobs worker');
+setInterval(pollForJob, JOB_POLL_INTERVAL);
