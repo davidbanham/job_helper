@@ -26,7 +26,7 @@ const done = {
   last_run_at: tomorrow,
 };
 
-describe.only('job helper', () => {
+describe('job helper', () => {
   afterEach(async () => {
     await Job.truncate();
   });
