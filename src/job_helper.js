@@ -58,7 +58,9 @@ const finderFactory = (db, Job) => async () => {
 const createFactory = (Job) => async (input) => {
   const jobSpec = Object.assign({}, input);
   if (!jobSpec.last_run_at) jobSpec.last_run_at = new Date(0);
-  jobSpec.next_run_at = calculateNextRun(jobSpec.cron, jobSpec.last_run_at);
+  if (!jobSpec.next_run_at) {
+    jobSpec.next_run_at = calculateNextRun(jobSpec.cron, jobSpec.last_run_at);
+  }
   return await (Job.create(jobSpec));
 };
 

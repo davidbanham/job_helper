@@ -53,6 +53,15 @@ describe('job helper', () => {
 
       expect(job.next_run_at).to.be.gt(now);
     });
+
+    it('should create a one-off job with a future run date correctly', async () => {
+      const job = await helper.create({
+        name: 'do it later',
+        next_run_at: tomorrow,
+      });
+      const now = new Date();
+      expect(job.next_run_at).to.be.gt(now);
+    });
   });
 
   describe('findAJob', () => {
