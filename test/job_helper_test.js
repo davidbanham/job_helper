@@ -1,5 +1,5 @@
 const Helper = require('../src/job_helper');
-const Job = require('../example/models/job');
+const Job = require('../example/src/models/job');
 const { db } = require('../config');
 
 const helper = Helper({
