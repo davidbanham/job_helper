@@ -15,6 +15,13 @@ const reapFactory = (Job) => () =>
 const calculateNextRun = (cron, lastRun) => {
   if (!cron) return new Date();
 
+  if (cron === 'weekly') {
+    const now = new Date(lastRun);
+    const manjana = new Date();
+    manjana.setDate(now.getDate() + 7);
+    return manjana.toISOString();
+  }
+
   if (cron === 'fortnightly') {
     const now = new Date(lastRun);
     const manjana = new Date();
@@ -27,6 +34,13 @@ const calculateNextRun = (cron, lastRun) => {
     const manjana = new Date();
     manjana.setDate(now.getDate());
     manjana.setMonth(now.getMonth() + 1);
+  }
+
+  if (cron === 'quarterly') {
+    const now = new Date(lastRun);
+    const manjana = new Date();
+    manjana.setDate(now.getDate());
+    manjana.setMonth(now.getMonth() + 3);
   }
 
   const interval = parser.parseExpression(cron, { currentDate: lastRun });
