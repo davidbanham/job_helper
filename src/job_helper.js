@@ -81,6 +81,10 @@ const createFactory = (Job) => async (input) => {
 const completionMarkerFactory = (Job) => async (jobId) => {
   const job = await Job.findById(jobId);
 
+  if (job == null || job.dataValues == null) {
+    return;
+  }
+
   if (!job.dataValues.cron) {
     return job.destroy();
   }
