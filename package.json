@@ -1,6 +1,6 @@
 {
   "name": "@ordermentum/job_helper",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "A helper lib for a Sequelize/Postgres backed in-process job queue",
   "main": "src/job_helper.js",
   "directories": {
