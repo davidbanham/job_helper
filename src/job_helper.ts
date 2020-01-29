@@ -1,16 +1,19 @@
-const parser = require('cron-parser');
+import parser from 'cron-parser';
 
-const reapFactory = (Job) => () =>
-  Job.update({
-    queued: false,
-  }, {
-    where: {
-      queued: true,
-      unlock_at: {
-        $lt: new Date(),
-      },
+const reapFactory = Job => () =>
+  Job.update(
+    {
+      queued: false,
     },
-  });
+    {
+      where: {
+        queued: true,
+        unlock_at: {
+          $lt: new Date(),
+        },
+      },
+    }
+  );
 
 const calculateNextRun = (cron, lastRun) => {
   if (!cron) return new Date();
@@ -43,7 +46,11 @@ const calculateNextRun = (cron, lastRun) => {
     manjana.setMonth(now.getMonth() + 3);
   }
 
-  const interval = parser.parseExpression(cron, { currentDate: lastRun });
+  const interval = parser.parseExpression(
+    cron,
+    { currentDate: lastRun },
+    () => {}
+  );
   return interval.next();
 };
 
@@ -51,14 +58,19 @@ const finderFactory = (db, Job) => async () => {
   const transactionOpts = {
     isolationLevel: db.Transaction.ISOLATION_LEVELS.SERIALIZABLE,
   };
-  const j = await db.transaction(transactionOpts, transaction => Job.findOne({
-    where: {
-      queued: false,
-      next_run_at: {
-        $lt: new Date(),
+  const j = await db.transaction(transactionOpts, transaction =>
+    Job.findOne(
+      {
+        where: {
+          queued: false,
+          next_run_at: {
+            $lt: new Date(),
+          },
+        },
       },
-    },
-  }, { transaction }));
+      { transaction }
+    )
+  );
   if (!j) {
     return Promise.resolve();
   }
@@ -69,60 +81,60 @@ const finderFactory = (db, Job) => async () => {
   return j.save();
 };
 
-const createFactory = (Job) => async (input) => {
-  const jobSpec = Object.assign({}, input);
+const createFactory = Job => async input => {
+  const jobSpec = { ...input };
   if (!jobSpec.last_run_at) jobSpec.last_run_at = new Date(0);
   if (!jobSpec.next_run_at) {
     jobSpec.next_run_at = calculateNextRun(jobSpec.cron, jobSpec.last_run_at);
   }
-  return await (Job.create(jobSpec));
+  return Job.create(jobSpec);
 };
 
-const completionMarkerFactory = (Job) => async (jobId) => {
+const completionMarkerFactory = Job => async (jobId: string) => {
   const job = await Job.findById(jobId);
 
-  if (job == null || job.dataValues == null) {
-    return;
+  if (!job) {
+    return false;
   }
 
-  if (!job.dataValues.cron) {
+  if (!job.cron) {
     return job.destroy();
   }
 
-  job.set({
+  return job.update({
     queued: false,
     next_run_at: calculateNextRun(job.cron, new Date()),
     failures: 0,
   });
-  return job.save();
 };
 
-const destroyFactory = (Job) => async (jobId) => {
+const destroyFactory = Job => async jobId => {
   const job = await Job.findById(jobId);
-  return await job.destroy();
+  if (!job) return false;
+  return job.destroy();
 };
 
-const failureMarker = (Job, backoffMs) => async (jobId) => {
+const failureMarker = (Job, backoffMs) => async jobId => {
   const job = await Job.findById(jobId);
+  if (!job) {
+    return false;
+  }
+
   const { failures } = job.dataValues;
   const backoff = backoffMs * failures;
   const nextRun = new Date(new Date().getTime() + backoff);
-  job.set({
+  return job.update({
     queued: false,
     failures: failures + 1,
     next_run_at: nextRun,
   });
-  return job.save();
 };
 
-module.exports = (opts) => {
-  const options = Object.assign({
-    reapInterval: 60000,
-    backoffMs: 60000,
-  }, opts);
+module.exports = opts => {
+  const options = { reapInterval: 60000, backoffMs: 60000, ...opts };
 
-  const Job = options.Job;
-  const db = options.db;
+  const { Job } = options;
+  const { db } = options;
 
   const reaper = setInterval(reapFactory(Job), options.reapInterval);
 

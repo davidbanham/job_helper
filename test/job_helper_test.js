@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+const expect = require('chai');
 const Helper = require('../src/job_helper');
 const Job = require('../example/src/models/job');
 const { db } = require('../config');
@@ -99,7 +101,9 @@ describe('job helper', () => {
 
     it('should populate the next run time', async () => {
       const marked = await helper.markComplete(job.id);
-      expect(marked.next_run_at.toISOString()).to.not.equal(job.next_run_at.toISOString());
+      expect(marked.next_run_at.toISOString()).to.not.equal(
+        job.next_run_at.toISOString()
+      );
     });
 
     it('should set the failure count to 0', async () => {
@@ -169,9 +173,7 @@ describe('job helper', () => {
 
   describe('reap', async () => {
     it('should release a queued job', async () => {
-      const quickie = Object.assign({
-        linger_ms: 1,
-      }, valid);
+      const quickie = { linger_ms: 1, ...valid };
       const job = await helper.create(quickie);
       await helper.findAJob();
       await helper.reapFactory(Job)();
@@ -180,9 +182,7 @@ describe('job helper', () => {
     });
 
     it('should not release a queued job with a long linger', async () => {
-      const quickie = Object.assign({
-        linger_ms: 1000000,
-      }, valid);
+      const quickie = { linger_ms: 1000000, ...valid };
       await helper.create(quickie);
       await helper.findAJob();
       await helper.reapFactory(Job)();

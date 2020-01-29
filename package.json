@@ -1,14 +1,26 @@
 {
   "name": "@ordermentum/job_helper",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "A helper lib for a Sequelize/Postgres backed in-process job queue",
   "main": "src/job_helper.js",
   "directories": {
     "example": "example",
     "test": "test"
   },
+  "files": [
+    "lib/*"
+  ],
   "scripts": {
-    "test": "mocha"
+    "lint": "yarn eslint 'src/**/*.{ts,js}' 'test/**/*.{ts,js}'",
+    "build:coverage": "nyc check-coverage --statements 74 --branches 60 --functions 66 --lines 72",
+    "test": "NODE_ENV=test nyc npm run spec",
+    "report": "./node_modules/.bin/nyc report --reporter=html",
+    "spec": "mocha -R spec ./test/test_helper.js test/*.*",
+    "build": "yarn clean && babel src --out-dir lib --extensions \".ts,.tsx\"",
+    "prepublish": "yarn run build",
+    "clean": "rm -rf lib",
+    "reporter": "nyc --reporter=html yarn run test",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -25,9 +37,41 @@
     "cron-parser": "^2.3.1"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^3.2.0",
+    "@babel/cli": "7.8.3",
+    "@babel/core": "7.8.3",
+    "@babel/plugin-proposal-class-properties": "7.8.3",
+    "@babel/plugin-proposal-object-rest-spread": "7.8.3",
+    "@babel/plugin-transform-async-to-generator": "7.8.3",
+    "@babel/polyfill": "7.8.3",
+    "@babel/preset-env": "7.8.3",
+    "@babel/preset-typescript": "7.8.3",
+    "@babel/register": "7.8.3",
+    "@types/cors": "2.8.6",
+    "@types/express": "4.17.2",
+    "@types/helmet": "0.0.45",
+    "@types/qs": "6.9.0",
+    "@typescript-eslint/eslint-plugin": "2.18.0",
+    "@typescript-eslint/parser": "^2.18.0",
+    "babel-eslint": "10.0.3",
+    "babel-plugin-istanbul": "6.0.0",
+    "chai": "4.2.0",
+    "cross-env": "6.0.3",
+    "eslint": "6.8.0",
+    "eslint-config-airbnb": "18.0.1",
+    "eslint-config-prettier": "6.10.0",
+    "eslint-import-resolver-typescript": "2.0.0",
+    "eslint-plugin-import": "2.20.0",
+    "eslint-plugin-jsx-a11y": "6.2.3",
+    "eslint-plugin-mocha": "6.2.2",
+    "eslint-plugin-prettier": "3.1.2",
+    "eslint-plugin-react": "7.18.0",
+    "express": "4.17.1",
+    "mocha": "7.0.1",
+    "nyc": "14.1.1",
     "pg": "^6.1.4",
-    "sequelize": "^3.30.2"
+    "prettier": "1.19.1",
+    "sequelize": "^3.30.2",
+    "sinon": "7.5.0",
+    "typescript": "^3.7.5"
   }
 }
